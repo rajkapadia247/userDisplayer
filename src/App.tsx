@@ -16,7 +16,9 @@ interface User {
 			username: string;
 			password: string;
 		};
-    picture: {}
+    picture: {
+      thumbnail: string;
+    }
 	}[];
 }
 
@@ -40,9 +42,11 @@ const App: React.FC = () => {
 				name: { first, last, title },
 				email,
 				login: { username, password },
+				picture: {thumbnail}
 			}) => {
 				return (
 					<tr key={username}>
+            <td><img src={thumbnail} alt={`avatar_${username}`}/></td>
 						<td>{`${title} ${first} ${last}`}</td>
 						<td>{email}</td>
 						<td>{username}</td>
@@ -66,6 +70,7 @@ const App: React.FC = () => {
 				<table>
 					<thead>
 						<tr>
+              <th>Picture</th>
 							<th>Name</th>
 							<th>E-mail</th>
 							<th>Username </th>
