@@ -11,7 +11,6 @@ const App: React.FC = () => {
   const callApi: () => Promise<void> = async () => {
     const resp = await fetch(API_ENDPOINT);
     const apiData = await resp.json();
-    console.log(apiData);
     setData(apiData);
   }
 
@@ -19,7 +18,8 @@ const App: React.FC = () => {
 
 	return (
 		<div>
-      Hello world!
+			<button onClick={() => {callApi()}}>Refresh</button>
+			<pre>{JSON.stringify(data, null, 2)}</pre>
 		</div>
 	);
 };
