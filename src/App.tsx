@@ -4,22 +4,77 @@ import "./App.css";
 
 const API_ENDPOINT = "https://randomuser.me/api/?results=20";
 
+interface User {
+	results: {
+		name: {
+			first: string;
+			last: string;
+			title: string;
+		};
+		email: string;
+		login: {
+			username: string;
+			password: string;
+		};
+    picture: {}
+	}[];
+}
+
 const App: React.FC = () => {
+	const [data, setData] = useState<User>({ results: [] });
 
-  const [data, setData] = useState();
+	const callApi: () => Promise<void> = async () => {
+		const resp = await fetch(API_ENDPOINT);
+		const apiData = await resp.json();
+		console.log(apiData);
+		setData(apiData);
+	};
 
-  const callApi: () => Promise<void> = async () => {
-    const resp = await fetch(API_ENDPOINT);
-    const apiData = await resp.json();
-    setData(apiData);
-  }
+	useEffect(() => {
+		callApi();
+	}, []);
 
-  useEffect(() => {callApi()}, []);
+	const renderTableDetails: () => JSX.Element[] = () => {
+		return data.results.map(
+			({
+				name: { first, last, title },
+				email,
+				login: { username, password },
+			}) => {
+				return (
+					<tr key={username}>
+						<td>{`${title} ${first} ${last}`}</td>
+						<td>{email}</td>
+						<td>{username}</td>
+						<td>{password}</td>
+					</tr>
+				);
+			}
+		);
+	};
 
 	return (
-		<div>
-			<button onClick={() => {callApi()}}>Refresh</button>
-			<pre>{JSON.stringify(data, null, 2)}</pre>
+		<div className="app">
+			<button
+				onClick={() => {
+					callApi();
+				}}
+			>
+				Refresh
+			</button>
+			<div className="tableWrapper">
+				<table>
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>E-mail</th>
+							<th>Username </th>
+							<th>password </th>
+						</tr>
+					</thead>
+					<tbody>{renderTableDetails()}</tbody>
+				</table>
+			</div>
 		</div>
 	);
 };
